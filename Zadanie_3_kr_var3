@@ -1,0 +1,55 @@
+import java.math.BigInteger;
+import java.util.Scanner;
+
+public class FibonacciDigitFrequency {
+
+    // Fast doubling method: returns [F(n), F(n+1)]
+    private static BigInteger[] fib(long n) {
+        if (n == 0) {
+            return new BigInteger[]{BigInteger.ZERO, BigInteger.ONE};
+        }
+        BigInteger[] p = fib(n >> 1);
+        BigInteger a = p[0]; // F(k)
+        BigInteger b = p[1]; // F(k+1)
+
+
+        BigInteger c = a.multiply(b.shiftLeft(1).subtract(a));
+
+  
+        BigInteger d = a.multiply(a).add(b.multiply(b));
+
+        if ((n & 1) == 0) {
+            return new BigInteger[]{c, d};
+        } else {
+            return new BigInteger[]{d, c.add(d)};
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        long i = scanner.nextLong();
+        scanner.close();
+
+        // Compute i-th Fibonacci number
+        BigInteger fibNumber = fib(i)[0];
+
+        // Count digit frequencies
+        String s = fibNumber.toString();
+        int[] freq = new int[10];
+        for (char ch : s.toCharArray()) {
+            freq[ch - '0']++;
+        }
+
+        
+        int maxCount = -1;
+        int maxDigit = -1;
+        for (int digit = 9; digit >= 0; digit--) {
+            if (freq[digit] > maxCount) {
+                maxCount = freq[digit];
+                maxDigit = digit;
+            }
+        }
+
+        System.out.println("[(" + maxCount + ", " + maxDigit + ")]");
+    }
+}
